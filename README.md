@@ -2,7 +2,7 @@
 
 This repository contains code written for TSG for the caching layer on the main site.
 
-It is a simple (Golang)[https://go.dev/] service deployed on AWS Lambda that retrieves blocks from (Notion)[https://notion.so/], constructs the required consumer objects for the frontend, and inserts them into a (Turso)[https://turso.tech/] database.
+It is a simple [Golang](https://go.dev/) service deployed on AWS Lambda that retrieves blocks from [Notion](https://notion.so/), constructs the required consumer objects for the frontend, and inserts them into a [Turso](https://turso.tech/) database.
 
 ## Installation
 
