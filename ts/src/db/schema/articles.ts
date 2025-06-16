@@ -6,7 +6,7 @@ import { z } from "zod/v4";
 export const articlesTable = sqliteTable(
     "articles",
     {
-        id: text("id").primaryKey(),
+        id: text("id").primaryKey().unique(),
         articleMetadata: text("article_metadata").notNull(),
         createdAt: integer("created_at", { mode: "timestamp" })
             .notNull()
