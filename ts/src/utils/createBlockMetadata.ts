@@ -24,7 +24,7 @@ export const createBlockMetadata = async (
 ): Promise<TsgBlockMetadata> => {
     if (!isFullBlock(notionBlockObj)) {
         throw new Error(
-            `Received partial block object when trying to create block metadata. Received object was ${notionBlockObj}`,
+            `Received partial block object when trying to create block metadata. Received object was ${JSON.stringify(notionBlockObj, null, 4)}`,
         );
     }
 
@@ -70,8 +70,7 @@ export const createBlockMetadata = async (
             calloutIconType:
                 type == BlockType.CB_2 &&
                 notionBlockObj.type == "callout" &&
-                notionBlockObj.callout.icon &&
-                notionBlockObj.callout.icon.type,
+                notionBlockObj.callout.icon?.type,
             accordionTitle:
                 type == BlockType.CB_3 &&
                 notionBlockObj.type == "toggle" &&
@@ -271,14 +270,14 @@ export const createBlockMetadata = async (
         title:
             (type == BlockType.CB_1 &&
                 notionBlockObj.type == "heading_1" &&
-                richTextToHtml(notionBlockObj.heading_1.rich_text)) ||
+                richTextToHtml(notionBlockObj.heading_1.rich_text)) ??
             (type == BlockType.LB_1 &&
                 notionBlockObj.type == "heading_1" &&
                 richTextToHtml(notionBlockObj.heading_1.rich_text)),
         paragraph:
             (type == BlockType.PARAGRAPH &&
                 notionBlockObj.type == "paragraph" &&
-                richTextToHtml(notionBlockObj.paragraph.rich_text)) ||
+                richTextToHtml(notionBlockObj.paragraph.rich_text)) ??
             (type == BlockType.BUTTON &&
                 notionBlockObj.type == "paragraph" &&
                 richTextToHtml(notionBlockObj.paragraph.rich_text)),
@@ -329,8 +328,7 @@ export const createBlockMetadata = async (
         calloutIconType:
             type == BlockType.CB_2 &&
             notionBlockObj.type == "callout" &&
-            notionBlockObj.callout.icon &&
-            notionBlockObj.callout.icon.type,
+            notionBlockObj.callout.icon?.type,
     };
 
     return {
@@ -424,7 +422,7 @@ const getColumnWidth = (notionBlockObj: BlockObjectResponse): number => {
 const getCalloutIcon = (notionBlockObj: CalloutBlockObjectResponse) => {
     const { icon } = notionBlockObj.callout;
     if (!icon) return "";
-    if (icon.type == "emoji") return `${icon.emoji}`;
+    if (icon.type == "emoji") return icon.emoji;
     if (icon.type == "external") return icon.external.url;
     if (icon.type == "file") return icon.file.url;
     if (icon.type == "custom_emoji") return icon.custom_emoji.url;
