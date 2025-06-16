@@ -16,7 +16,7 @@ export const articlesTable = sqliteTable(
             .default(sql`(unixepoch('now'))`),
     },
     (table) => {
-        return [index("idx_example_id").on(table.id)];
+        return [index("idx_article_id").on(table.id)];
     },
 );
 
