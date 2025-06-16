@@ -1,0 +1,11 @@
+version = 0.1
+
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "tsg-cache-stack"
+s3_bucket = "tsg-cache-bucket"
+s3_prefix = "tsg-cache"
+region = "ap-southeast-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
