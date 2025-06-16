@@ -13,7 +13,6 @@ import { eq } from "drizzle-orm";
 
 export const handler = async (
     event: APIGatewayProxyEventV2,
-    context: Context,
 ): Promise<APIGatewayProxyResultV2> => {
     const articleId = event.queryStringParameters?.articleId;
     if (!articleId) {
