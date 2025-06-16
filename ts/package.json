@@ -11,7 +11,9 @@
         "deploy": "aws lambda update-function-code --function-name hello-world-ts --zip-file fileb://lambda-function.zip",
         "env:generate": "node scripts/generate-env.js",
         "dev:invoke:article": "sam local invoke --env-vars env.json \"ArticleHandler\"",
-        "dev:invoke:article:event": "sam local invoke --env-vars env.json \"ArticleHandler\" -e mocks/events/test-article-id.json"
+        "dev:invoke:article:event": "sam local invoke --env-vars env.json \"ArticleHandler\" -e mocks/events/test-article-id.json",
+        "drizzle:migrate": "drizzle-kit migrate",
+        "drizzle:generate": "drizzle-kit generate"
     },
     "keywords": [],
     "author": "",
