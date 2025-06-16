@@ -1,15 +1,11 @@
 import db from "@/db";
 import { articlesTable } from "@/db/schema";
-import { TsgBlockMetadata } from "@/types";
-import { createBlockMetadata } from "@/utils/createBlockMetadata";
-import { getBlockChildren } from "@/utils/notion";
-import {
-    APIGatewayProxyEventV2,
-    APIGatewayProxyResultV2,
-    Context,
-} from "aws-lambda";
+import { InvokeCommand, LambdaClient } from "@aws-sdk/client-lambda";
+import { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from "aws-lambda";
 import { differenceInDays } from "date-fns";
 import { eq } from "drizzle-orm";
+
+const lambdaClient = new LambdaClient({ region: process.env.AWS_REGION });
 
 export const handler = async (
     event: APIGatewayProxyEventV2,
@@ -33,7 +29,32 @@ export const handler = async (
         .limit(1);
 
     if (differenceInDays(now, dbResults[0].createdAt) >= 1) {
-        // TODO: fire off updateArticlesInCache call.
+        const invokeCommand = new InvokeCommand({
+            FunctionName: process.env.UPDATE_ARTICLES_FUNCTION_NAME,
+            InvocationType: "RequestResponse",
+            Payload: JSON.stringify({
+                queryStringParameters: {
+                    articleId: articleId,
+                },
+            }),
+        });
+
+        try {
+            const response = await lambdaClient.send(invokeCommand);
+            const responsePayload = JSON.parse(
+                new TextDecoder().decode(response.Payload),
+            );
+
+            return responsePayload;
+        } catch (error) {
+            console.error("Error invoking update function:", error);
+            return {
+                statusCode: 500,
+                body: JSON.stringify({
+                    error: "Failed to fetch article",
+                }),
+            };
+        }
     }
 
     const articleBlocks = JSON.parse(dbResults[0].articleMetadata);
