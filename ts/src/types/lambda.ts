@@ -7,8 +7,12 @@ export const SyncTriggerBodySchema = z.object({
 export type SyncTriggerBody = z.infer<typeof SyncTriggerBodySchema>;
 
 export interface BatchJob {
-    id: string;
-    type: string;
-    data: any;
-    createdAt: string;
+    type: "updateArticlesInCache" | string;
+    id: string; // The Notion Block ID
+    metadata?: {
+        slug?: string; // Original slug for reference
+        label?: string; // Human-readable label for logging
+        timestamp?: string; // When the job was created
+        [key: string]: any;
+    };
 }
