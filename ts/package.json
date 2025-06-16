@@ -4,10 +4,14 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "build": "esbuild src/index.ts --bundle --platform=node --target=node18 --format=cjs --outfile=dist/index.js --sourcemap --external:@aws-sdk/*",
-        "build:dev": "npm run build -- --watch",
-        "package": "npm run build && cd dist && zip -r ../lambda-function.zip .",
-        "deploy": "aws lambda update-function-code --function-name hello-world-ts --zip-file fileb://lambda-function.zip"
+        "build": "esbuild src/index.ts --bundle --platform=node --target=node18 --format=cjs --sourcemap --external:@aws-sdk/*",
+        "build:dev": "pnpm build -- --watch",
+        "build:sam": "sam build",
+        "package": "pnpm build && cd dist && zip -r ../lambda-function.zip .",
+        "deploy": "aws lambda update-function-code --function-name hello-world-ts --zip-file fileb://lambda-function.zip",
+        "env:generate": "node scripts/generate-env.js",
+        "dev:invoke:article": "sam local invoke --env-vars env.json \"ArticleHandler\"",
+        "dev:invoke:article:event": "sam local invoke --env-vars env.json \"ArticleHandler\" -e mocks/events/test-article-id.json"
     },
     "keywords": [],
     "author": "",

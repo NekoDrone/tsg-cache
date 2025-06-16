@@ -1,0 +1,60 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+
+Globals:
+    Function:
+        Timeout: 900
+        MemorySize: 128
+        Runtime: nodejs18.x
+
+Parameters:
+    TursoAuthToken:
+        Type: String
+        Default:
+    TursoDatabaseUrl:
+        Type: String
+        Default:
+    PublicIsStagingEnv:
+        Type: String
+        Default:
+    TsgBlogPageId:
+        Type: String
+        Default:
+    TsgEventPageId:
+        Type: String
+        Default:
+    TsgDatabasePageId:
+        Type: String
+        Default:
+    NotionIntegrationSecret:
+        Type: String
+        Default:
+        NoEcho: true
+
+Resources:
+    ArticleHandler:
+        Type: AWS::Serverless::Function
+        Properties:
+            CodeUri: src/lambda/
+            Handler: articleHandler.handler
+            FunctionUrlConfig:
+                AuthType: NONE
+                Cors:
+                    AllowOrigins: ["*"]
+                    AllowMethods: ["GET", "POST"]
+            Environment:
+                Variables:
+                    TURSO_AUTH_TOKEN: !Ref TursoAuthToken
+                    TURSO_DATABASE_URL: !Ref TursoDatabaseUrl
+                    PUBLIC_IS_STAGING_ENV: !Ref PublicIsStagingEnv
+                    TSG_BLOG_PAGE_ID: !Ref TsgBlogPageId
+                    TSG_EVENT_PAGE_ID: !Ref TsgEventPageId
+                    TSG_DATABASE_PAGE_ID: !Ref TsgDatabasePageId
+                    NOTION_INTEGRATION_SECRET: !Ref NotionIntegrationSecret
+        Metadata:
+            BuildMethod: esbuild
+            BuildProperties:
+                Minify: true
+                Target: "es2020"
+                EntryPoints:
+                    - articleHandler.ts
