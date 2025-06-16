@@ -19,12 +19,13 @@ To get started with development, see here.
 1. Clone this repository. `git clone https://github.com/NekoDrone/tsg-cache.git`
 2. Enter the folder. `cd tsg-cache`
 3. Copy the provided environment example file to your own file and fill the variables appropriately. `cp .env.example .env && nvim .env`
-4. Install dependencies. `pnpm install`
-5. Run the service. `pnpm dev`
+4. Run the script to generate env variables for the SAM Lambda environment `pnpm env:generate`
+5. Install dependencies. `pnpm install`
+6. Run the service. `pnpm dev:<function-name>`
 
 The project is built as a single function run in AWS Lambda. This will incur significant execution time on Lambda (about 15 minutes per run?) so be prepared whenever you call the endpoint.
 
-Additionally, if calling from local, the function performs recursive n+1 async calls to Notion's API to load articles. This will likely rate-limit you on Notion's side.
+Additionally, if calling from local, the function performs recursive n+1 async calls to Notion's API to load articles. This will likely rate-limit you on Notion's side. It is recommended you call this on SQS too.
 
 ## Deployment
 
