@@ -30,8 +30,94 @@ Parameters:
         Type: String
         Default:
         NoEcho: true
+    SyncTriggerAuthToken:
+        Type: String
+        Default:
+        NoEcho: true
 
 Resources:
+    ArticleUpdateQueue:
+        Type: AWS::SQS::Queue
+        Properties:
+            QueueName: !Sub "${AWS::StackName}-article-update-queue"
+            VisibilityTimeout: 960 # 16 minutes (longer than Lambda timeout)
+            MessageRetentionPeriod: 1209600 # 14 days
+            RedrivePolicy:
+                deadLetterTargetArn: !GetAtt ArticleUpdateDLQ.Arn
+                maxReceiveCount: 3
+
+    ArticleUpdateDLQ:
+        Type: AWS::SQS::Queue
+        Properties:
+            QueueName: !Sub "${AWS::StackName}-article-update-dlq"
+            MessageRetentionPeriod: 1209600 # 14 days
+
+    SyncTrigger:
+        Type: AWS::Serverless::Function
+        Properties:
+            CodeUri: src/lambda/
+            Handler: syncTrigger.handler
+            FunctionUrlConfig:
+                AuthType: NONE
+                Cors:
+                    AllowOrigins: ["*"]
+                    AllowMethods: ["POST"]
+            Environment:
+                Variables:
+                    TURSO_AUTH_TOKEN: !Ref TursoAuthToken
+                    TURSO_DATABASE_URL: !Ref TursoDatabaseUrl
+                    PUBLIC_IS_STAGING_ENV: !Ref PublicIsStagingEnv
+                    TSG_BLOG_PAGE_ID: !Ref TsgBlogPageId
+                    TSG_EVENT_PAGE_ID: !Ref TsgEventPageId
+                    TSG_DATABASE_PAGE_ID: !Ref TsgDatabasePageId
+                    NOTION_INTEGRATION_SECRET: !Ref NotionIntegrationSecret
+                    SYNC_TRIGGER_AUTH_TOKEN: !Ref SyncTriggerAuthToken
+                    QUEUE_URL: !Ref ArticleUpdateQueue
+            Policies:
+                - SQSSendMessagePolicy:
+                      QueueName: !GetAtt ArticleUpdateQueue.QueueName
+        Metadata:
+            BuildMethod: esbuild
+            BuildProperties:
+                Minify: true
+                Target: "es2020"
+                EntryPoints:
+                    - syncTrigger.ts
+
+    QueueProcessor:
+        Type: AWS::Serverless::Function
+        Properties:
+            CodeUri: src/lambda/
+            Handler: queueProcessor.handler
+            Environment:
+                Variables:
+                    TURSO_AUTH_TOKEN: !Ref TursoAuthToken
+                    TURSO_DATABASE_URL: !Ref TursoDatabaseUrl
+                    PUBLIC_IS_STAGING_ENV: !Ref PublicIsStagingEnv
+                    TSG_BLOG_PAGE_ID: !Ref TsgBlogPageId
+                    TSG_EVENT_PAGE_ID: !Ref TsgEventPageId
+                    TSG_DATABASE_PAGE_ID: !Ref TsgDatabasePageId
+                    NOTION_INTEGRATION_SECRET: !Ref NotionIntegrationSecret
+                    UPDATE_ARTICLES_FUNCTION_NAME: !Ref UpdateArticlesInCache
+            Events:
+                SQSEvent:
+                    Type: SQS
+                    Properties:
+                        Queue: !GetAtt ArticleUpdateQueue.Arn
+                        BatchSize: 1 # Process one article at a time
+                        FunctionResponseTypes:
+                            - ReportBatchItemFailures
+            Policies:
+                - LambdaInvokeFunction:
+                      FunctionName: !Ref UpdateArticlesInCache
+        Metadata:
+            BuildMethod: esbuild
+            BuildProperties:
+                Minify: true
+                Target: "es2020"
+                EntryPoints:
+                    - queueProcessor.ts
+
     UpdateArticlesInCache:
         Type: AWS::Serverless::Function
         Properties:
@@ -57,7 +143,7 @@ Resources:
                 Minify: true
                 Target: "es2020"
                 EntryPoints:
-                    - articleHandler.ts
+                    - updateArticlesInCache.ts
 
     GetArticlesInCache:
         Type: AWS::Serverless::Function
@@ -97,3 +183,12 @@ Outputs:
     GetArticlesInCacheFunctionUrl:
         Description: "Function URL for GetArticlesInCache"
         Value: !GetAtt GetArticlesInCacheFunctionUrl.FunctionUrl
+    SyncTriggerFunctionUrl:
+        Description: "Function URL for SyncTrigger"
+        Value: !GetAtt SyncTriggerFunctionUrl.FunctionUrl
+    ArticleUpdateQueueUrl:
+        Description: "URL for the Article Update Queue"
+        Value: !Ref ArticleUpdateQueue
+    ArticleUpdateDLQUrl:
+        Description: "URL for the Article Update Dead Letter Queue"
+        Value: !Ref ArticleUpdateDLQ
