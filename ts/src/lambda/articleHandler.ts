@@ -1,0 +1,40 @@
+import { TsgBlockMetadata } from "@/types";
+import { createBlockMetadata } from "@/utils/createBlockMetadata";
+import { getBlockChildren } from "@/utils/notion";
+import {
+    APIGatewayProxyEventV2,
+    APIGatewayProxyResultV2,
+    Context,
+} from "aws-lambda";
+
+export const handler = async (
+    event: APIGatewayProxyEventV2,
+    context: Context,
+): Promise<APIGatewayProxyResultV2> => {
+    const articleId = event.queryStringParameters?.articleId;
+    if (!articleId) {
+        return {
+            statusCode: 400,
+            body: JSON.stringify({
+                error: "Did not set articleId in query parameters.",
+            }),
+        };
+    }
+
+    const { results } = await getBlockChildren(articleId);
+
+    const articleBlocks: TsgBlockMetadata[] = [];
+
+    for (const child of results) {
+        articleBlocks.push(await createBlockMetadata(child));
+    }
+
+    const responseBody = {
+        articles: articleBlocks,
+    };
+
+    return {
+        statusCode: 200,
+        body: JSON.stringify(responseBody),
+    };
+};
