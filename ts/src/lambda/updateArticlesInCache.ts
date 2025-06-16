@@ -1,3 +1,5 @@
+import db from "@/db";
+import { articlesTable } from "@/db/schema";
 import { TsgBlockMetadata } from "@/types";
 import { createBlockMetadata } from "@/utils/createBlockMetadata";
 import { getBlockChildren } from "@/utils/notion";
@@ -28,6 +30,24 @@ export const handler = async (
     for (const child of results) {
         articleBlocks.push(await createBlockMetadata(child));
     }
+
+    const now = new Date();
+
+    await db
+        .insert(articlesTable)
+        .values({
+            id: articleId,
+            articleMetadata: JSON.stringify(articleBlocks),
+            createdAt: now,
+            updatedAt: now,
+        })
+        .onConflictDoUpdate({
+            target: articlesTable.id,
+            set: {
+                articleMetadata: JSON.stringify(articleBlocks),
+                updatedAt: now,
+            },
+        });
 
     const responseBody = {
         articles: articleBlocks,
