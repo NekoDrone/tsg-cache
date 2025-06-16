@@ -24,3 +24,21 @@ if (dbUrl == "")
     );
 
 export const TURSO_AUTH_TOKEN = dbAuthToken;
+
+const syncTriggerAuthToken = process.env.SYNC_TRIGGER_AUTH_TOKEN ?? "";
+
+if (dbUrl == "")
+    throw new Error(
+        "Did not set SYNC_TRIGGER_AUTH_TOKEN in .env file. Please try again.",
+    );
+
+export const SYNC_TRIGGER_AUTH_TOKEN = syncTriggerAuthToken;
+
+const notionDbUrl = process.env.TSG_DATABASE_PAGE_ID ?? "";
+
+if (dbUrl == "")
+    throw new Error(
+        "Did not set TSG_DATABASE_PAGE_ID in .env file. Please try again.",
+    );
+
+export const TSG_DATABASE_PAGE_ID = notionDbUrl;
