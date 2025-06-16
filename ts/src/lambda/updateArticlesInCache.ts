@@ -3,11 +3,7 @@ import { articlesTable } from "@/db/schema";
 import { TsgBlockMetadata } from "@/types";
 import { createBlockMetadata } from "@/utils/createBlockMetadata";
 import { getBlockChildren } from "@/utils/notion";
-import {
-    APIGatewayProxyEventV2,
-    APIGatewayProxyResultV2,
-    Context,
-} from "aws-lambda";
+import { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from "aws-lambda";
 
 export const handler = async (
     event: APIGatewayProxyEventV2,
