@@ -26,6 +26,7 @@
         "isolatedModules": true,
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
+        "noEmit": true,
 
         /* Type Checking */
         "strict": true,
@@ -34,5 +35,5 @@
         "skipLibCheck": true
     },
     "include": ["src/**/*"],
-    "exclude": ["node_modules", "dist"]
+    "exclude": ["node_modules", "dist", "scripts"]
 }
