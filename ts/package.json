@@ -4,7 +4,10 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "build": "esbuild src/index.ts --bundle --platform=node --target=node18 --format=cjs --outfile=dist/index.js --sourcemap --external:@aws-sdk/*",
+        "build:dev": "npm run build -- --watch",
+        "package": "npm run build && cd dist && zip -r ../lambda-function.zip .",
+        "deploy": "aws lambda update-function-code --function-name hello-world-ts --zip-file fileb://lambda-function.zip"
     },
     "keywords": [],
     "author": "",
