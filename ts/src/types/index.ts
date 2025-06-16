@@ -2,6 +2,7 @@ import type {
     PageObjectResponse,
     RichTextItemResponse,
 } from "@notionhq/client/build/src/api-endpoints";
+import z from "zod/v4";
 
 export interface TsgBlockMetadata {
     blockId: string;
@@ -18,6 +19,32 @@ export interface TableOfContent {
     level: number;
     text: string;
     id: string;
+}
+
+export enum ArticleStatus {
+    DRAFT = "Draft",
+    PUBLISHED = "Published",
+}
+
+export interface ImageAttributes {
+    url: string;
+    alt?: string;
+}
+
+export interface ArticleProperties {
+    id: string;
+    name: string;
+    description: string;
+    slug: string;
+    status: ArticleStatus;
+    group: string;
+    subgroup?: string;
+    coverImageFocus: string;
+    coverImage?: ImageAttributes;
+    coverImgIsVideo?: boolean;
+    ogImage?: string;
+    ogDescription?: string;
+    order?: number;
 }
 
 export enum BlockType {
