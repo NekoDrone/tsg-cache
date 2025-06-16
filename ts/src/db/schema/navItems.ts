@@ -11,12 +11,12 @@ export const navItemsTable = sqliteTable(
         group: text("group").notNull(),
         subgroup: text("subgroup"),
         order: integer(),
-        createdAt: integer("created_at", { mode: "timestamp" })
-            .notNull()
-            .default(sql`(unixepoch('now'))`),
-        updatedAt: integer("updated_at", { mode: "timestamp" })
-            .notNull()
-            .default(sql`(unixepoch('now'))`),
+        createdAt: integer("created_at", { mode: "timestamp" }).default(
+            sql`(unixepoch('now'))`,
+        ),
+        updatedAt: integer("updated_at", { mode: "timestamp" }).default(
+            sql`(unixepoch('now'))`,
+        ),
     },
     (table) => {
         return [index("idx_nav_items_id").on(table.label)];

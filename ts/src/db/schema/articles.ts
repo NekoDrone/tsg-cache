@@ -9,11 +9,11 @@ export const articlesTable = sqliteTable(
         id: text("id").primaryKey().unique(),
         articleMetadata: text("article_metadata").notNull(),
         createdAt: integer("created_at", { mode: "timestamp" })
-            .notNull()
-            .default(sql`(unixepoch('now'))`),
+            .default(sql`(unixepoch('now'))`)
+            .notNull(),
         updatedAt: integer("updated_at", { mode: "timestamp" })
-            .notNull()
-            .default(sql`(unixepoch('now'))`),
+            .default(sql`(unixepoch('now'))`)
+            .notNull(),
     },
     (table) => {
         return [index("idx_article_id").on(table.id)];
