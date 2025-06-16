@@ -207,7 +207,7 @@ type NotionListBlockChildrenResponse struct {
 
 type NotionBlock struct {
 	Object         string          `json:"object"`
-	ID             string          `json:"id"`
+	Id             string          `json:"id"`
 	Parent         NotionParent    `json:"parent"`
 	CreatedTime    time.Time       `json:"created_time"`
 	LastEditedTime time.Time       `json:"last_edited_time"`
