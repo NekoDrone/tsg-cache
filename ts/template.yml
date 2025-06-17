@@ -126,8 +126,12 @@ Resources:
                         FunctionResponseTypes:
                             - ReportBatchItemFailures
             Policies:
-                - LambdaInvokeFunction:
-                      FunctionName: !Ref UpdateArticlesInCache
+                - Version: "2012-10-17"
+                  Statement:
+                      - Effect: Allow
+                        Action:
+                            - lambda:InvokeFunction
+                        Resource: !GetAtt UpdateArticlesInCache.Arn
         Metadata:
             BuildMethod: esbuild
             BuildProperties:
@@ -188,8 +192,12 @@ Resources:
                     NOTION_INTEGRATION_SECRET: !Ref NotionIntegrationSecret
                     UPDATE_ARTICLES_FUNCTION_NAME: !Ref UpdateArticlesInCache
             Policies:
-                - LambdaInvokeFunction:
-                      FunctionName: !Ref UpdateArticlesInCache
+                - Version: "2012-10-17"
+                  Statement:
+                      - Effect: Allow
+                        Action:
+                            - lambda:InvokeFunction
+                        Resource: !GetAtt UpdateArticlesInCache.Arn
         Metadata:
             BuildMethod: esbuild
             BuildProperties:
