@@ -15,7 +15,9 @@
         "dev:invoke:article:update": "sam local invoke --env-vars env.json \"UpdateArticlesInCache\" -e mocks/events/test-article-id.json",
         "dev:invoke:article:get": "sam local invoke --env-vars env.json \"GetArticlesInCache\" -e mocks/events/test-article-id.json",
         "drizzle:migrate": "drizzle-kit migrate",
-        "drizzle:generate": "drizzle-kit generate"
+        "drizzle:generate": "drizzle-kit generate",
+        "deploy:initial": "sam deploy -g",
+        "deploy:prod": "sam deploy --config-file samconfig-prod.toml"
     },
     "keywords": [],
     "author": "",
