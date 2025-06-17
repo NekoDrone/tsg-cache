@@ -199,15 +199,6 @@ Resources:
                     - getArticlesInCache.ts
 
 Outputs:
-    UpdateArticlesInCacheFunctionUrl:
-        Description: "Function URL for UpdateArticlesInCache"
-        Value: !GetAtt UpdateArticlesInCache.FunctionUrl
-    GetArticlesInCacheFunctionUrl:
-        Description: "Function URL for GetArticlesInCache"
-        Value: !GetAtt GetArticlesInCache.FunctionUrl
-    SyncTriggerFunctionUrl:
-        Description: "Function URL for SyncTrigger"
-        Value: !GetAtt SyncTrigger.FunctionUrl
     ArticleUpdateQueueUrl:
         Description: "URL for the Article Update Queue"
         Value: !Ref ArticleUpdateQueue
