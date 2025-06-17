@@ -44,12 +44,8 @@ export const handler = async (
             },
         });
 
-    const responseBody = {
-        articles: articleBlocks,
-    };
-
     return {
         statusCode: 200,
-        body: JSON.stringify(responseBody),
+        body: JSON.stringify({ message: "Success!" }),
     };
 };
