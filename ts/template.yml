@@ -12,29 +12,29 @@ Globals:
 Parameters:
     TursoAuthToken:
         Type: String
-        Default:
+        Default: "set this properly please"
     TursoDatabaseUrl:
         Type: String
-        Default:
+        Default: "set this properly please"
     PublicIsStagingEnv:
         Type: String
-        Default:
+        Default: "set this properly please"
     TsgBlogPageId:
         Type: String
-        Default:
+        Default: "set this properly please"
     TsgEventPageId:
         Type: String
-        Default:
+        Default: "set this properly please"
     TsgDatabasePageId:
         Type: String
-        Default:
+        Default: "set this properly please"
     NotionIntegrationSecret:
         Type: String
-        Default:
+        Default: "set this properly please"
         NoEcho: true
     SyncTriggerAuthToken:
         Type: String
-        Default:
+        Default: "set this properly please"
         NoEcho: true
 
 Resources:
@@ -209,13 +209,13 @@ Resources:
 Outputs:
     UpdateArticlesInCacheFunctionUrl:
         Description: "Function URL for UpdateArticlesInCache"
-        Value: !GetAtt UpdateArticlesInCacheFunctionUrl.FunctionUrl
+        Value: !GetAtt UpdateArticlesInCache.FunctionUrl
     GetArticlesInCacheFunctionUrl:
         Description: "Function URL for GetArticlesInCache"
-        Value: !GetAtt GetArticlesInCacheFunctionUrl.FunctionUrl
+        Value: !GetAtt GetArticlesInCache.FunctionUrl
     SyncTriggerFunctionUrl:
         Description: "Function URL for SyncTrigger"
-        Value: !GetAtt SyncTriggerFunctionUrl.FunctionUrl
+        Value: !GetAtt SyncTrigger.FunctionUrl
     ArticleUpdateQueueUrl:
         Description: "URL for the Article Update Queue"
         Value: !Ref ArticleUpdateQueue
