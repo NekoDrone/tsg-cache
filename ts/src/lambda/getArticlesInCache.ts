@@ -60,7 +60,7 @@ export const handler = async (
     const articleBlocks = JSON.parse(dbResults[0].articleMetadata);
 
     const responseBody = {
-        articles: articleBlocks,
+        articleBlocks,
     };
 
     return {
