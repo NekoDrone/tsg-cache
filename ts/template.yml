@@ -71,8 +71,6 @@ Resources:
         Properties:
             CodeUri: src/lambda/
             Handler: syncTrigger.handler
-            Layers:
-                - !Ref LibsqlLayer
             FunctionUrlConfig:
                 AuthType: NONE
                 Cors:
@@ -105,8 +103,6 @@ Resources:
         Properties:
             CodeUri: src/lambda/
             Handler: queueProcessor.handler
-            Layers:
-                - !Ref LibsqlLayer
             Environment:
                 Variables:
                     TURSO_AUTH_TOKEN: !Ref TursoAuthToken
@@ -145,8 +141,6 @@ Resources:
         Properties:
             CodeUri: src/lambda/
             Handler: updateArticlesInCache.handler
-            Layers:
-                - !Ref LibsqlLayer
             FunctionUrlConfig:
                 AuthType: NONE
                 Cors:
@@ -174,8 +168,6 @@ Resources:
         Properties:
             CodeUri: src/lambda/
             Handler: getArticlesInCache.handler
-            Layers:
-                - !Ref LibsqlLayer
             FunctionUrlConfig:
                 AuthType: NONE
                 Cors:
