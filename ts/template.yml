@@ -6,6 +6,8 @@ Globals:
         Timeout: 300
         MemorySize: 128
         Runtime: nodejs18.x
+        Layers:
+            - !Ref LibsqlLayer
 
 Parameters:
     TursoAuthToken:
@@ -36,12 +38,24 @@ Parameters:
         NoEcho: true
 
 Resources:
+    LibsqlLayer:
+        Type: AWS::Serverless::LayerVersion
+        Properties:
+            LayerName: !Sub "${AWS::StackName}-libsql-layer"
+            Description: "libsql Linux x64 GNU library for Lambda"
+            ContentUri: layers/libsql/libsql_layer.zip
+            CompatibleRuntimes:
+                - nodejs18.x
+                - nodejs20.x
+            CompatibleArchitectures:
+                - x86_64
+
     ArticleUpdateQueue:
         Type: AWS::SQS::Queue
         Properties:
             QueueName: !Sub "${AWS::StackName}-article-update-queue"
-            VisibilityTimeout: 960 # 16 minutes (longer than Lambda timeout)
-            MessageRetentionPeriod: 1209600 # 14 days
+            VisibilityTimeout: 960
+            MessageRetentionPeriod: 1209600
             RedrivePolicy:
                 deadLetterTargetArn: !GetAtt ArticleUpdateDLQ.Arn
                 maxReceiveCount: 3
@@ -50,13 +64,15 @@ Resources:
         Type: AWS::SQS::Queue
         Properties:
             QueueName: !Sub "${AWS::StackName}-article-update-dlq"
-            MessageRetentionPeriod: 1209600 # 14 days
+            MessageRetentionPeriod: 1209600
 
     SyncTrigger:
         Type: AWS::Serverless::Function
         Properties:
             CodeUri: src/lambda/
             Handler: syncTrigger.handler
+            Layers:
+                - !Ref LibsqlLayer
             FunctionUrlConfig:
                 AuthType: NONE
                 Cors:
@@ -89,6 +105,8 @@ Resources:
         Properties:
             CodeUri: src/lambda/
             Handler: queueProcessor.handler
+            Layers:
+                - !Ref LibsqlLayer
             Environment:
                 Variables:
                     TURSO_AUTH_TOKEN: !Ref TursoAuthToken
@@ -104,7 +122,7 @@ Resources:
                     Type: SQS
                     Properties:
                         Queue: !GetAtt ArticleUpdateQueue.Arn
-                        BatchSize: 1 # Process one article at a time
+                        BatchSize: 1
                         FunctionResponseTypes:
                             - ReportBatchItemFailures
             Policies:
@@ -123,6 +141,8 @@ Resources:
         Properties:
             CodeUri: src/lambda/
             Handler: updateArticlesInCache.handler
+            Layers:
+                - !Ref LibsqlLayer
             FunctionUrlConfig:
                 AuthType: NONE
                 Cors:
@@ -150,6 +170,8 @@ Resources:
         Properties:
             CodeUri: src/lambda/
             Handler: getArticlesInCache.handler
+            Layers:
+                - !Ref LibsqlLayer
             FunctionUrlConfig:
                 AuthType: NONE
                 Cors:
@@ -192,3 +214,8 @@ Outputs:
     ArticleUpdateDLQUrl:
         Description: "URL for the Article Update Dead Letter Queue"
         Value: !Ref ArticleUpdateDLQ
+    LibsqlLayerArn:
+        Description: "ARN of the libsql Lambda Layer"
+        Value: !Ref LibsqlLayer
+        Export:
+            Name: !Sub "${AWS::StackName}-LibsqlLayerArn"

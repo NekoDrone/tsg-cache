@@ -1,0 +1,8 @@
+{
+    "name": "libsql-layer",
+    "version": "1.0.0",
+    "description": "Lambda layer containing libsql Linux x64 GNU binary",
+    "dependencies": {
+        "@libsql/linux-x64-gnu": "latest"
+    }
+}
