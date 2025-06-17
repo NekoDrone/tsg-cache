@@ -12,6 +12,8 @@ To get started with development, see here.
 
 - Node
 - Git
+- AWS CLI
+- AWS SAM CLI
 - Infinite patience
 
 ### Steps
@@ -31,6 +33,8 @@ Additionally, if calling from local, the function performs recursive n+1 async c
 
 There should be a runner provided for GitHub Actions, but if that fails you will need to perform the following to manually build, upload, and deploy to Lambda.
 
-1. Build the project `pnpm build`
-2. Upload the project to Lambda using the AWS dashboard.
-3. For the start command, use the one listed in `pnpm start` or whatever makes sense on Lambda.
+1. Build the project in a container using the AWS SAM CLI. `pnpm build:sam:container`
+2. Run the initial SAM deployment config and provide the variables in the guided deployment. `pnpm deploy:initial`
+3. Save the file as `samconfig-prod.toml` at the project root.
+
+For subsequent deployments, if everything went fine, you should simply be able to run `pnpm deploy:prod` which automatically references the created `samconfig-prod.toml`. Note that this file is in the ignore and should not be uploaded as it contains auth tokens and other deployment secrets.
