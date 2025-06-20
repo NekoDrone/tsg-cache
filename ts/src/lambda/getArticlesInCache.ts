@@ -31,7 +31,7 @@ export const handler = async (
     if (differenceInDays(now, dbResults[0].createdAt) >= 1) {
         const invokeCommand = new InvokeCommand({
             FunctionName: process.env.UPDATE_ARTICLES_FUNCTION_NAME,
-            InvocationType: "RequestResponse",
+            InvocationType: "Event",
             Payload: JSON.stringify({
                 queryStringParameters: {
                     articleId: articleId,
