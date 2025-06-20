@@ -28,7 +28,7 @@ export const handler = async (
         .where(eq(articlesTable.id, articleId))
         .limit(1);
 
-    if (differenceInDays(now, dbResults[0].createdAt) >= 1) {
+    if (differenceInDays(now, dbResults[0].updatedAt) > 1) {
         const invokeCommand = new InvokeCommand({
             FunctionName: process.env.UPDATE_ARTICLES_FUNCTION_NAME,
             InvocationType: "Event",
@@ -51,7 +51,8 @@ export const handler = async (
             return {
                 statusCode: 500,
                 body: JSON.stringify({
-                    error: "Failed to fetch article",
+                    error,
+                    message: "Failed to fetch article",
                 }),
             };
         }
