@@ -34,6 +34,9 @@ export const handler = async (
             body: JSON.stringify({
                 message: "Invalid JSON in request body",
                 error,
+                event,
+                eventBodyParsed,
+                eventBodyString,
             }),
         };
     }
@@ -46,6 +49,7 @@ export const handler = async (
             body: JSON.stringify({
                 message: "Zod type error.",
                 error,
+                event,
             }),
         };
     }
@@ -56,6 +60,7 @@ export const handler = async (
             statusCode: 403,
             body: JSON.stringify({
                 error: "Invalid auth token",
+                event,
             }),
         };
     }
@@ -90,6 +95,7 @@ export const handler = async (
             body: JSON.stringify({
                 message: "Failed to queue jobs",
                 error: error instanceof Error ? error.message : "Unknown error",
+                event,
             }),
         };
     }
