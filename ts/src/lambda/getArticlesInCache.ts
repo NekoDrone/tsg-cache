@@ -28,36 +28,6 @@ export const handler = async (
         .where(eq(articlesTable.id, articleId))
         .limit(1);
 
-    if (differenceInDays(now, dbResults[0].updatedAt) > 1) {
-        const invokeCommand = new InvokeCommand({
-            FunctionName: process.env.UPDATE_ARTICLES_FUNCTION_NAME,
-            InvocationType: "Event",
-            Payload: JSON.stringify({
-                queryStringParameters: {
-                    articleId: articleId,
-                },
-            }),
-        });
-
-        try {
-            const response = await lambdaClient.send(invokeCommand);
-            const responsePayload = JSON.parse(
-                new TextDecoder().decode(response.Payload),
-            );
-
-            return responsePayload;
-        } catch (error) {
-            console.error("Error invoking update function:", error);
-            return {
-                statusCode: 500,
-                body: JSON.stringify({
-                    error,
-                    message: "Failed to fetch article",
-                }),
-            };
-        }
-    }
-
     const articleBlocks = JSON.parse(dbResults[0].articleMetadata);
 
     const responseBody = {
