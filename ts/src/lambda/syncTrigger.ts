@@ -65,7 +65,7 @@ export const handler = async (
         };
     }
 
-    const items = await getNavigationItems(true);
+    const items = await getNavigationItems();
 
     const batchJobs: BatchJob[] = [];
 

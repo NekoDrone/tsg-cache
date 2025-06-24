@@ -14,50 +14,9 @@ export const notionClient = new Client({
     auth: NOTION_INTEGRATION_SECRET,
 });
 
-export const getNavigationItems = async (isStaging: boolean) => {
-    const filter: QueryDatabaseParameters["filter"] = isStaging
-        ? {
-              and: [
-                  {
-                      property: "group",
-                      select: {
-                          does_not_equal: "Admin",
-                      },
-                  },
-                  {
-                      property: "group",
-                      select: {
-                          does_not_equal: "Unlisted",
-                      },
-                  },
-              ],
-          }
-        : {
-              and: [
-                  {
-                      property: "status",
-                      status: {
-                          equals: "Published",
-                      },
-                  },
-                  {
-                      property: "group",
-                      select: {
-                          does_not_equal: "Admin",
-                      },
-                  },
-                  {
-                      property: "group",
-                      select: {
-                          does_not_equal: "Unlisted",
-                      },
-                  },
-              ],
-          };
-
+export const getNavigationItems = async () => {
     const { results } = await notionClient.databases.query({
         database_id: TSG_DATABASE_PAGE_ID,
-        filter,
     });
 
     return results.map((article): NavigationItems => {
